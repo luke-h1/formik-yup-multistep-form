@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, FormikConfig, FormikValues } from "formik";
 import { TextField, CheckboxWithLabel } from "formik-material-ui";
 import { number, mixed, object } from "yup";
@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <Card>
       <CardContent>
-        <Formik<FormValues>
+        <FormikStepper
           validationSchema={object({
             money: mixed().when("millionaire", {
               is: true,
@@ -37,7 +37,6 @@ export default function Home() {
           }}
           onSubmit={() => {}}
         >
-          <Form autoCapitalize="off">
             <div>
               <Field
                 name="firstName"
@@ -67,22 +66,23 @@ export default function Home() {
                 label="All the money you have"
               />
             </div>
-          </Form>
-        </Formik>
+        </FormikStepper>
       </CardContent>
     </Card>
   );
 }
-export function FormikStepper({children, ...props}: FormikConfig<FormikValues>) {
-return (
-  <Formik
-  {...props}
+export function FormikStepper({
+  children,
+  ...props
+}: FormikConfig<FormikValues>) {
+  // Allow us to only show steps we want by splitting the children into an array
+  const childrenArray = React.Children.toArray(children);
+  const [step, setStep] = useState(0);
+  const currentChild = childrenArray[step];
 
-  onSubmit={() => {}}
->
-  <Form autoCapitalize="off">
-   {children}
-  </Form>
-</Formik>
-)
+  return (
+    <Formik {...props} onSubmit={() => {}}>
+      <Form autoCapitalize="off">{currentChild}</Form>
+    </Formik>
+  );
 }
