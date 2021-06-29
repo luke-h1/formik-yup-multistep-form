@@ -60,7 +60,7 @@ export default function Home() {
             <Field
               name="description"
               component={TextField}
-              label="All the money you have"
+              label="Description"
             />
           </FormikStep>
         </FormikStepper>
@@ -85,8 +85,8 @@ export function FormikStepper({
     children
   ) as React.ReactElement<FormikStepProps>[];
   const [step, setStep] = useState(0);
-  const currentChild = childrenArray[step];
-  console.log('currentChild:', currentChild)
+  const currentChild = childrenArray[step] as React.ReactElement<FormikStepProps>;
+  console.log('currentChild:', currentChild.props.validationSchema)
 
   function isLastStep() {
     return step === childrenArray.length - 1;
@@ -95,6 +95,7 @@ export function FormikStepper({
   return (
     <Formik
       {...props}
+      validationSchema={currentChild.props.validationSchema}
       onSubmit={async (values, helpers) => {
         // if we're on the last step of the form
         if (isLastStep()) {
